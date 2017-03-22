@@ -1,0 +1,39 @@
+
+
+empty = 'Empty'
+v1, v2, v3 = 11, 8, 7
+
+T = bpy.data.objects['Icosphere'].matrix_world
+bpy.data.objects[empty].location = T*bpy.data.objects['Icosphere'].data.vertices[v1].co
+x_vec = bpy.data.objects['Icosphere'].data.vertices[v2].co -bpy.data.objects['Icosphere'].data.vertices[v1].co
+x_vec = mathutils.Vector(x_vec)
+x_vec= T*x_vec
+	
+
+y_vec = bpy.data.objects['Icosphere'].data.vertices[v3].co - bpy.data.objects['Icosphere'].data.vertices[v1].co
+y_vec = mathutils.Vector(y_vec)
+y_vec = T*y_vec
+
+
+z_vec = x_vec.cross(y_vec)
+
+x_vec.normalize()
+z_vec.normalize()
+
+y_vec = z_vec.cross(x_vec)
+y_vec.normalize()
+
+obj = bpy.data.objects['Empty.001']
+obj.rotation_mode = 'QUATERNION'
+obj.rotation_quaternion =  z_vec.to_track_quat('Z','X')
+
+
+an = x_vec.angle(y_vec)
+
+
+
+#Create Empty
+bpy.ops.object.empty_add(type='ARROWS')
+myobj = bpy.context.active_object
+
+bpy.ops.mesh.primitive_ico_sphere()
