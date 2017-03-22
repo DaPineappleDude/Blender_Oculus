@@ -1,0 +1,70 @@
+#Moving vertices in global coordinates
+
+import bpy
+
+
+obj  = bpy.data.objects['Cube']
+mesh = obj.data
+vert = mesh.vertices[0]
+mat_world = obj.matrix_world
+
+pos_world = mat_world * vert.co
+pos_world.z += 0.1
+vert.co = mat_world.inverted() * pos_world
+
+#If you're editing a lot of vertices then you might want to compose the matrix:
+
+from mathutils import Vector, Matrix
+
+vec = Vector((0.0, 0.0, 0.1))  
+mat_edit = mat_world.inverted() * Matrix.Translate(vec) * mat_world
+
+vert.co = mat_edit * vert.co
+
+
+#Current Vertice Display
+import bmesh
+def print_vert_details(selected_verts):
+    num_verts = len(selected_verts)
+    print("number of verts: {}".format(num_verts))
+    print("vert indices: {}".format([id.index for id in selected_verts]))
+    
+def get_vertex_data(object_reference):
+    bm = bmesh.from_edit_mesh(object_reference.data)
+    selected_verts = [vert for vert in bm.verts if vert.select]
+    print_vert_details(selected_verts)
+
+#Function Call
+#object_reference = bpy.context.active_object
+#
+
+
+
+#Aligning an empty along a vector
+Vec = bpy.data.objects['Icosphere.002'].data.vertices[10].co - bpy.data.objects['Icosphere.002'].data.vertices[11].co
+DirectionVector = mathutils.Vector(Vec) 
+bpy.context.object.rotation_mode = 'QUATERNION'
+bpy.context.object.rotation_quaternion = DirectionVector.to_track_quat('X','Z')
+
+
+def make_matrix(v1, v2, v3):
+    a = v2-v1
+    b = v3-v1
+    c = a.cross(b)
+    if c.magnitude>0:
+        c = c.normalized()
+    else:
+        raise BaseException("A B C are colinear")
+    b2 = c.cross(a).normalized()
+    a2 = a.normalized()
+    m = Matrix([a2, b2, c]).transposed()
+    s = a.magnitude
+    m = Matrix.Translation(v1) * Matrix.Scale(s,4) * m.to_4x4()
+    return m
+
+
+def frame_rot(empty, v1, v2):
+    Vec = bpy.data.objects['Icosphere.002'].data.vertices[v1].co - bpy.data.objects['Icosphere.002'].data.vertices[v2].co
+    DirectionVector = mathutils.Vector(Vec)
+    bpy.data.objects[empty].rotation_mode = 'QUATERNION'
+    bpy.data.objects[empty].rotation_quaternion = DirectionVector.to_track_quat('X','Z')
