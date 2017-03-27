@@ -29,13 +29,44 @@ obj = bpy.data.objects['Empty']
 obj.rotation_mode = 'QUATERNION'
 obj.rotation_quaternion =  x_vec.to_track_quat('X','Z')
 
-
-an = x_vec.angle(y_vec)
+#extracting z-vector of empty
+z_em = obj.matrix_world.to_3x3()[2]
 
 
 
 #Create Empty
 bpy.ops.object.empty_add(type='ARROWS')
 myobj = bpy.context.active_object
+myobj.location = [0,0,0]
+myobj.empty_draw_size = 3
+
+
+#Rotation Angles
+an_z = x_vec.angle([1,0,0])
+
+y_now = (mathutils.Vector([0, 1, 0]))*myobj.matrix_world.to_3x3()
+an_x= y_vec.angle(y_now)
+an_x =  x_vec.angle([0,1,0])
+
+z_now = (mathutils.Vector([0, 0, 1]))*myobj.matrix_world.to_3x3()
+an_y = z_vec.angle(z_now)
+an_y = x_vec.angle([0,0,1])
+
+myobj.rotation_euler = [an_x,an_y, an_z]
+
+myobj.matrix_basis.to_3x3().rotate(rot_matrix
+
+
+angle = x_axis.rotation_difference(x_vec).to_euler()
+myobj.rotation_euler = angle
+
+myobj.location = T*bpy.data.objects['Icosphere'].data.vertices[v1].co
+
 
 bpy.ops.mesh.primitive_ico_sphere()
+
+
+rot_matrix = [[x_vec.x, x_vec.y, x_vec.z], [y_vec.x, y_vec.y, y_vec.z], [z_vec.x, z_vec.y, z_vec.z]]
+
+rot_matrix = mathutils.Matrix(rot_matrix)
+myobj.matrix_world.to_3x3()*rot_matrix
