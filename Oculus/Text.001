@@ -1,4 +1,6 @@
-
+import bpy
+import mathutils
+import bmesh
 
 empty = 'Empty'
 v1, v2, v3 = 11, 8, 7
@@ -23,9 +25,9 @@ z_vec.normalize()
 y_vec = z_vec.cross(x_vec)
 y_vec.normalize()
 
-obj = bpy.data.objects['Empty.001']
+obj = bpy.data.objects['Empty']
 obj.rotation_mode = 'QUATERNION'
-obj.rotation_quaternion =  z_vec.to_track_quat('Z','X')
+obj.rotation_quaternion =  x_vec.to_track_quat('X','Z')
 
 
 an = x_vec.angle(y_vec)
