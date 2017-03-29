@@ -7,20 +7,38 @@ for ob in bpy.context.scene.objects:
     ob.select = ob.type == 'EMPTY' and ob.name.startswith("Empty")
 bpy.ops.object.delete()
 
+Face_Transforms_Icosphere = {}
+Face_Transforms_Global = {}
+    
+# Vertices Data
+V1 = [11,11,11,11,11,1,0,5,5,5,7,2,3,3,3,10,1,2,9]
+V2 = [8,7,6,10,9,5,5,4,9,0,8,3,8,4,2,6,2,6,4]
+V3 = [7,6,10,9,8,10,1,9,10,4,3,0,4,0,7,1,0,7,8]
 
 face = 0
+
+#Adding Empty @ Icosphere centre
+
+# Transform Matrix for Icosphere
+T = bpy.data.objects['Icosphere'].matrix_basis
+T_tmp = T
+T_tmp = T_tmp.to_3x3()
+T_tmp = T_tmp.normalized()
+T_tmp = T_tmp.to_euler()
+
+#New Empty
+bpy.ops.object.empty_add(type='ARROWS')
+myobj = bpy.context.active_object
+myobj.name = 'Empty.Icosphere'
+myobj.empty_draw_size = 15
+myobj.location = bpy.data.objects['Icosphere'].location
+myobj.rotation_euler = T_tmp
+
+
 for face in range(0,19):
-    
-    # Vertices Data
-    V1 = [11,11,11,11,11,1,0,5,5,5,7,2,3,3,3,10,1,2,9]
-    V2 = [8,7,6,10,9,5,5,4,9,0,8,3,8,4,2,6,2,6,4]
-    V3 = [7,6,10,9,8,10,1,9,10,4,3,0,4,0,7,1,0,7,8]
     
     # Testing for face 1 => v1, v2, v3 = 11, 8, 7
     v1, v2, v3 = V1[face], V2[face], V3[face]
-
-    # Transform Matrix for Icosphere
-    T = bpy.data.objects['Icosphere'].matrix_world
 
     # Local X vector : v2 - v1
     x_vec = bpy.data.objects['Icosphere'].data.vertices[v2].co -bpy.data.objects['Icosphere'].data.vertices[v1].co
@@ -75,30 +93,28 @@ for face in range(0,19):
     myobj.rotation_euler = rot_matrix.to_euler()
 
 
-##Transformation Matrix (Basis)
+    #Transformation Matrix (Basis)
 
-##Global to Icosphere --> T_Icos
-#T_Icos = bpy.data.objects['Icosphere'].matrix_basis
+    #Global to Icosphere --> T_Icos
+    T_Icos = T
+    
+    #Global to Face_0XX --> T_Face[idx]
+    T_Face = myobj.matrix_basis
 
+    #Icosphere to Face_0XX --> T_I_F
+    # T_Face[idx] = T_I_F * T_Icos 
+    
+    T_Icos_inv = T_Icos.copy()
+    T_Icos_inv.invert()
+    T_I_F = T_Face*T_Icos_inv
+    
+    #Storing the Transformations (w.r.t to global centre)in a dictionary
+    Face_Transforms_Global[face] = T_Face
+    
+    #Storing the Transformations (w.r.t to object centre)in a dictionary
+    Face_Transforms_Icosphere[face] = T_I_F
+    
 
-#T_Face = []
-##Global to Face_0XX --> T_Face[idx]
-#empty_crrnt = 'Empty.0' + idx
-#T_Face[idx] = bpy.data.objects[empty_crrnt].matrix_basis
-
-##Icosphere to Face_0XX --> T_I_F
-## T_Face[idx] = T_I_F * T_Icos 
-#T_Icos_inv = T_Icos.copy()
-#T_Icos_inv.inverse()
-#T_I_F = T_Face[idx]*T_Icos_inv
-
-##Generating Names for faces
-#for idx in range(0, 19):
-#    if idx > 9:
-#        empty = 'Empty.0' + str(idx)
-#    elif idx <= 9:
-#        empty = 'Empty.00' + str(idx)
-#    print(empty)
     
 
         
