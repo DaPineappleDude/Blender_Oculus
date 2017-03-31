@@ -114,6 +114,9 @@ for face in range(0,19):
     #Storing the Transformations (w.r.t to object centre)in a dictionary
     Face_Transforms_Icosphere[face] = T_I_F
     
+    
+
+
 
     
 
