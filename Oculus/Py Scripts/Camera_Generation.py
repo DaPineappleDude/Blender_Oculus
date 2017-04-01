@@ -80,15 +80,6 @@ for cam in range(0, len(x)):
 
     cam_obj.scale = [.06, .06, .06]
 
-    cam_dat = bpy.data.cameras[cam-len(x)]
-    #Focusing the camera
-    cam_dat.type = 'PERSP'
-    
-    #CAMERA INTRINSICS
-    cam_dat.lens = 32 #in mm
-    #cam_dat.sensor_width = 
-    #cam_dat.sensor_height = 
-    
     
     #CAMERA EXTRINSICS
     #Positioning the Camera
@@ -105,4 +96,17 @@ for cam in range(0, len(x)):
     #Correction for Cece's axes
 
 
+
+
+for cam in range(0, len(x)):
+    
+    cam_dat = bpy.data.cameras[cam-len(x)]
+    #Focusing the camera
+    cam_dat.type = 'PERSP'
+    
+    #CAMERA INTRINSICS: in mm
+    cam_dat.lens = 30.0 
+    cam_dat.sensor_width = 14.131200
+    cam_dat.sensor_height = 10.350000
+    cam_dat.clip_end = 2000
 
