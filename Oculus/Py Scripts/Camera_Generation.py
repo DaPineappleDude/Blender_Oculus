@@ -80,18 +80,16 @@ for cam in range(0, len(x)):
 
     cam_obj.scale = [.06, .06, .06]
 
-    cam_dat = bpy.data.cameras[cam] 
-    cam_dat.name = cam_obj.name
+    cam_dat = bpy.data.cameras[cam-len(x)]
     #Focusing the camera
-    cam_dat.dof_object = bpy.data.objects['Icosphere']
     cam_dat.type = 'PERSP'
     
     #CAMERA INTRINSICS
     cam_dat.lens = 32 #in mm
     #cam_dat.sensor_width = 
     #cam_dat.sensor_height = 
-
-
+    
+    
     #CAMERA EXTRINSICS
     #Positioning the Camera
     cam_obj.location = x[cam], y[cam], z[cam]
@@ -105,4 +103,6 @@ for cam in range(0, len(x)):
     T_tmp.transpose()
     bpy.ops.transform.rotate(value=pi, axis=(T_tmp[2][0], T_tmp[2][1], T_tmp[2][2]), constraint_axis=(False, False, True), constraint_orientation = 'NORMAL')
     #Correction for Cece's axes
+
+
 
