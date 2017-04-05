@@ -105,8 +105,8 @@ for cam in range(0, len(x)):
     cam_dat.type = 'PERSP'
     
     #CAMERA INTRINSICS: in mm
-    cam_dat.lens = 30.0 
+    cam_dat.lens = 128.0 
     cam_dat.sensor_width = 14.131200
     cam_dat.sensor_height = 10.350000
-    cam_dat.clip_end = 2000
+    cam_dat.clip_end = 2500
 
